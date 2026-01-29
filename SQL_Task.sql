@@ -1,3 +1,4 @@
+-- первое задание
 SELECT count(title) AS movies_number, c."name" AS category
 FROM film f
 INNER JOIN film_category fc 
@@ -7,7 +8,7 @@ ON c.category_id = fc.category_id
 GROUP BY category
 ORDER BY movies_number DESC;
 
-
+--второе задание
 SELECT first_name, last_name
 FROM actor a
 INNER JOIN film_actor fa 
@@ -16,7 +17,7 @@ INNER JOIN film f
 ON fa.film_id = f.film_id
 ORDER BY rental_rate DESC 
 LIMIT 10;
-
+--третье задание
 SELECT name, p.amount
 FROM category c
 INNER JOIN film_category fc 
@@ -31,7 +32,7 @@ INNER JOIN payment p
 ON r.rental_id = p.rental_id 
 ORDER BY p.amount DESC
 LIMIT 1;
-
+--четвертое задание
 SELECT title
 FROM film f
 LEFT JOIN inventory i
@@ -95,6 +96,7 @@ WHERE (c3.city LIKE 'A%' OR c3.city LIKE '%-%')
 GROUP BY c.name
 ORDER BY SUM(EXTRACT(EPOCH FROM (r.return_date - r.rental_date)) / 3600.0) DESC NULLS LAST
 
+	--восьмое задание
 
 SELECT city,
        category_name,
@@ -118,6 +120,7 @@ FROM (
 ) hours_ranked
 WHERE dense_rank = 1
 ORDER BY category_rental_hours;
+
 
 
 
