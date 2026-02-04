@@ -97,23 +97,3 @@ pip install -r requirements.txt
 # Run orchestrator
 python main.py
 ```
-
-
-## Design Rationale (Why this implementation?)
-
-### 1. Technology Choices
-- **Python & Pandas**: Selected for the perfect balance between development speed and data processing power. Pandas' **vectorization** allows us to bypass slow Python loops, achieving C-level performance on large datasets.
-- **Docker**: Ensures the "single command execution" requirement and guarantees that the system works identically regardless of the host OS.
-- **Category Dtypes**: Crucial for the 100M records/day requirement. By storing repetitive strings as categories, we reduce memory footprint by ~70%, allowing analysis of massive files on standard hardware.
-
-### 2. Architectural Choices (Strategy Pattern)
-The system uses the **Strategy Pattern** for its alerting rules. 
-- **Decoupling**: The engine doesn't need to know *how* a rule works, only that it has a `.check()` method.
-- **Extensibility**: To add a new rule:
-    1. Create a new class in `src/alerts.py` inheriting from `AlertStrategy`.
-    2. Implement the `.check(df)` method using vectorized operations.
-    3. Register it in `main.py` using `engine.add_strategy()`.
-- **Why this way?** This makes the system "Open-Closed" (Open for extension, closed for modification), minimizing the risk of breaking existing rules when adding new ones.
-
-## Verification
-The system has been verified with a dataset of **1.5M records**, processing them in **~7 seconds**. At this rate, 100M records/day can be analyzed in approximately 7-8 minutes on similar hardware, meeting the high-throughput requirement.
