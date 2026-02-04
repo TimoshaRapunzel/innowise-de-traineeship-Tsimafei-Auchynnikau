@@ -1,0 +1,14 @@
+services:
+  alert-system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: alert-project
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./data:/app/data
+      - ./config:/app/config
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python main.py
