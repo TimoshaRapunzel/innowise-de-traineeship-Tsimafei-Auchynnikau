@@ -1,0 +1,29 @@
+# IDEs
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Data and Logs
+data/
+*.csv
+*.log
+
+# Docker
+.docker/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sensitivity
+.env
+secret*
+credentials*
