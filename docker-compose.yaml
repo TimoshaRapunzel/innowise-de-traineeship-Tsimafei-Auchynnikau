@@ -1,0 +1,80 @@
+services:
+  # 1. База данных Postgres
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+
+  # 2. Сервис инициализации (создает таблицы и юзера)
+  airflow-init:
+    build: .
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate &&
+        airflow users create \
+          --username airflow \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com \
+          --password airflow
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      # Включаем возможность тестирования соединений (на всякий случай и тут)
+      - AIRFLOW__CORE__TEST_CONNECTION=Enabled
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 3. Веб-сервер (UI)
+  airflow-webserver:
+    build: .
+    restart: always
+    command: webserver
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      # !!! ГЛАВНОЕ ИЗМЕНЕНИЕ: Включаем кнопку Test Connection !!!
+      - AIRFLOW__CORE__TEST_CONNECTION=Enabled
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+
+  # 4. Планировщик (Scheduler)
+  airflow-scheduler:
+    build: .
+    restart: always
+    command: scheduler
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      # Для единообразия настроек
+      - AIRFLOW__CORE__TEST_CONNECTION=Enabled
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+
+volumes:
+  postgres-db-volume:
