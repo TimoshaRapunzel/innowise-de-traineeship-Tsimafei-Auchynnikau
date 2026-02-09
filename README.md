@@ -51,3 +51,4 @@ The project runs the following analytical queries on the data:
 2.  Identify top 5 rooms with the lowest average student age.
 3.  Find top 5 rooms with the biggest age difference between the oldest and youngest student.
 4.  List rooms that contain mixed-sex students (both Male and Female).
+
