@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+logs/
+dags/airflow.db
+dags/airflow.cfg
+dags/webserver_config.py
+docker/localstack_data/
+*.csv
+data/
+.gemini/
+jars/

@@ -1,0 +1,8 @@
+apache-airflow-providers-amazon
+apache-airflow-providers-common-sql
+pyspark==3.5.0
+pandas==2.1.4
+numpy
+boto3
+psycopg2-binary
+awscli-local
