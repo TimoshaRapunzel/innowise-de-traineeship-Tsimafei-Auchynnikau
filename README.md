@@ -6,7 +6,6 @@ A robust data pipeline for processing Helsinki bike-sharing data using Docker, L
 - `dags/`: Airflow DAGs for orchestration.
 - `docker/`: Infrastructure configuration and initialization scripts.
 - `src/`: Core Python application logic following SOLID principles.
-- `tests/`: Automated tests.
 
 ## Setup
 1. Ensure Docker and Docker Compose are installed.
